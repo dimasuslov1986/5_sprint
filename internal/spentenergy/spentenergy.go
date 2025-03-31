@@ -1,6 +1,8 @@
 package spentenergy
 
-import ...
+import (
+	"time"
+)
 
 // Основные константы, необходимые для расчетов.
 const (
@@ -28,8 +30,17 @@ const (
 // duration time.Duration — длительность тренировки.
 //
 // Создайте функцию ниже.
-...
-
+func WalkingSpentCalories(steps int, weight, height float64, duration time.Duration) float64 {
+	if weight <= 0 || height <= 0 {
+		return 0 // нужно ли ошибку добавить в функцию?
+	}
+	if duration <= 0 {
+		return 0 // нужно ли ошибку добавить в функцию?
+	}
+	meanSp := MeanSpeed(steps, duration)
+	ccal := ((walkingCaloriesWeightMultiplier * weight) + (meanSp*meanSp/height)*walkingSpeedHeightMultiplier) * duration.Hours() * minInH
+	return ccal
+}
 
 // Константы для расчета калорий, расходуемых при беге.
 const (
@@ -46,8 +57,17 @@ const (
 // duration time.Duration — длительность тренировки.
 //
 // Создайте функцию ниже.
-...
-
+func RunningSpentCalories(steps int, weight float64, duration time.Duration) float64 {
+	if weight <= 0 {
+		return 0 // нужно ли ошибку добавить в функцию?
+	}
+	if duration <= 0 {
+		return 0 // нужно ли ошибку добавить в функцию?
+	}
+	meanSp := MeanSpeed(steps, duration)
+	ccal := ((runningCaloriesMeanSpeedMultiplier * meanSp) - runningCaloriesMeanSpeedShift) * weight
+	return ccal
+}
 
 // МeanSpeed возвращает значение средней скорости движения во время тренировки.
 //
@@ -55,10 +75,16 @@ const (
 //
 // steps int — количество совершенных действий(число шагов при ходьбе и беге).
 // duration time.Duration — длительность тренировки.
-// 
+//
 // Создайте функцию ниже.
-...
-
+func MeanSpeed(steps int, duration time.Duration) float64 {
+	if duration <= 0 {
+		return 0
+	}
+	dist := Distance(steps)
+	meanSp := dist / duration.Hours()
+	return meanSp
+}
 
 // Distance возвращает дистанцию(в километрах), которую преодолел пользователь за время тренировки.
 //
@@ -66,8 +92,9 @@ const (
 // Параметры:
 //
 // steps int — количество совершенных действий (число шагов при ходьбе и беге).
-// 
+//
 // Создайте функцию ниже
-...
-
-
+func Distance(steps int) float64 {
+	dist := float64(steps) * lenStep / mInKm
+	return dist
+}
