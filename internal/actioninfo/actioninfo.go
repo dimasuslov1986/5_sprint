@@ -13,7 +13,11 @@ type DataParser interface {
 // создайте функцию Info()
 func Info(dataset []string, dp DataParser) {
 	for _, v := range dataset {
-		dp.Parse(v) // добавить ошибку парсинга
+		// добавить ошибку парсинга
+		if dp.Parse(v) != nil {
+			fmt.Println(dp.Parse(v))
+			continue
+		}
 	}
 	fmt.Println(dp.ActionInfo())
 }

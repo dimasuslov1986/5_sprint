@@ -47,8 +47,8 @@ func (ds DaySteps) ActionInfo() (string, error) {
 	if ds.Duration <= 0 {
 		return "", fmt.Errorf("ошибка продолжительности прогулки")
 	}
-	dist := float64(ds.Steps) * StepLength / 1000
-	ccal := spentenergy.WalkingSpentCalories(ds.Steps, float64(ds.Personal.Weight), float64(ds.Personal.Height), ds.Duration) // не понял какую ошибку тут искать
+	dist := spentenergy.Distance(ds.Steps)
+	ccal := spentenergy.WalkingSpentCalories(ds.Steps, ds.Personal.Weight, ds.Personal.Height, ds.Duration) // не понял какую ошибку тут искать
 	info := fmt.Sprintf(`Количество шагов: %d.
 Дистанция составила %.2f км.
 Вы сожгли %.2f ккал.`, ds.Steps, dist, ccal)
